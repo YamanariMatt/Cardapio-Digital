@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardápio Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════
+   CONFIGURAÇÃO — edite apenas esta seção
+═══════════════════════════════════════════════ */
+:root {
+  /* 🏪 Nome e slogan */
+  --nome-restaurante: "Bistrô Noturno";
+  --slogan: "Sabores que contam histórias";
+
+  /* 📱 WhatsApp — coloque apenas números (com DDD e DDI) */
+  --whatsapp: "5567999999999";
+
+  /* 🎨 Cores principais */
+  --cor-primaria: #1a1a1a;
+  --cor-secundaria: #f5f0e8;
+  --cor-acento: #c8a96e;
+  --cor-acento2: #8b4513;
+  --cor-texto: #1a1a1a;
+  --cor-fundo: #faf8f4;
+  --cor-card: #ffffff;
+  --cor-borda: #e8e2d9;
+
+  /* 🖋 Tipografia (nomes do Google Fonts) */
+  --fonte-titulo: 'Fraunces', serif;
+  --fonte-corpo: 'DM Sans', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--fonte-corpo);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════ */
+header {
+  background: var(--cor-primaria);
+  color: var(--cor-secundaria);
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+}
+
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  gap: 1rem;
+}
+
+.logo h1 {
+  font-family: var(--fonte-titulo);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cor-acento);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.logo p {
+  font-size: 0.65rem;
+  color: rgba(245,240,232,0.5);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-cart {
+  background: var(--cor-acento);
+  border: none;
+  color: var(--cor-primaria);
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-cart:hover { background: #d4b87a; transform: scale(1.02); }
+
+.cart-count {
+  background: var(--cor-primaria);
+  color: var(--cor-acento);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+.hero {
+  background: var(--cor-primaria);
+  color: var(--cor-secundaria);
+  text-align: center;
+  padding: 3rem 1.5rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(200,169,110,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero h2 {
+  font-family: var(--fonte-titulo);
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--cor-acento);
+  margin-bottom: 0.5rem;
+  line-height: 1.1;
+}
+
+.hero p {
+  font-size: 0.9rem;
+  color: rgba(245,240,232,0.5);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════
+   NAVEGAÇÃO DE CATEGORIAS
+═══════════════════════════════════════════════ */
+.cat-nav-wrap {
+  background: var(--cor-card);
+  border-bottom: 1px solid var(--cor-borda);
+  position: sticky;
+  top: 64px;
+  z-index: 90;
+}
+
+.cat-nav {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0 1rem;
+}
+
+.cat-nav::-webkit-scrollbar { display: none; }
+
+.cat-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(26,26,26,0.45);
+  font-family: var(--fonte-corpo);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.9rem 1.1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.cat-btn:hover { color: var(--cor-texto); }
+.cat-btn.ativo {
+  color: var(--cor-acento2);
+  border-bottom-color: var(--cor-acento2);
+}
+
+/* ═══════════════════════════════════════════════
+   GRID DE ITENS
+═══════════════════════════════════════════════ */
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 6rem;
+}
+
+.secao {
+  margin-bottom: 3rem;
+}
+
+.secao-titulo {
+  font-family: var(--fonte-titulo);
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--cor-primaria);
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
+}
+
+.secao-desc {
+  font-size: 0.82rem;
+  color: rgba(26,26,26,0.45);
+  margin-bottom: 1.25rem;
+  font-style: italic;
+}
+
+.itens-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* ═══════════════════════════════════════════════
+   CARD DE ITEM
+═══════════════════════════════════════════════ */
+.item-card {
+  background: var(--cor-card);
+  border: 1px solid var(--cor-borda);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.25s;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-card:hover {
+  border-color: var(--cor-acento);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(200,169,110,0.12);
+}
+
+.item-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  background: #f0ebe0;
+}
+
+.item-img-placeholder {
+  width: 100%;
+  height: 160px;
+  background: linear-gradient(135deg, #f0ebe0 0%, #e8e0d0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.item-body {
+  padding: 1rem 1.1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-tags {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.tag {
+  font-size: 0.65rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 100px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.tag-destaque { background: #fef3e0; color: #b07b1e; border: 1px solid #f0d090; }
+.tag-vegano { background: #e8f5e0; color: #3a7a20; border: 1px solid #b8d890; }
+.tag-picante { background: #fde8e8; color: #a02020; border: 1px solid #f0b0b0; }
+.tag-novo { background: #e8eeff; color: #2040a0; border: 1px solid #b0c0f0; }
+
+.item-nome {
+  font-family: var(--fonte-titulo);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--cor-primaria);
+  margin-bottom: 0.3rem;
+  line-height: 1.2;
+}
+
+.item-desc {
+  font-size: 0.8rem;
+  color: rgba(26,26,26,0.5);
+  line-height: 1.5;
+  flex: 1;
+  margin-bottom: 0.75rem;
+}
+
+.item-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.item-preco {
+  font-family: var(--fonte-titulo);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--cor-acento2);
+}
+
+.item-preco .cents {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.btn-add {
+  background: var(--cor-primaria);
+  color: var(--cor-secundaria);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-add:hover {
+  background: var(--cor-acento);
+  color: var(--cor-primaria);
+  transform: scale(1.1);
+}
+
+.btn-add.adicionado {
+  background: var(--cor-acento2);
+}
+
+.qty-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.qty-btn {
+  background: var(--cor-fundo);
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-texto);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.qty-btn:hover { background: var(--cor-acento); border-color: var(--cor-acento); color: var(--cor-primaria); }
+
+.qty-num {
+  font-weight: 600;
+  font-size: 0.9rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════════════
+   CARRINHO (DRAWER LATERAL)
+═══════════════════════════════════════════════ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.overlay.aberto { opacity: 1; pointer-events: all; }
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: min(420px, 100vw);
+  background: var(--cor-card);
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: -4px 0 40px rgba(0,0,0,0.15);
+}
+
+.drawer.aberto { transform: translateX(0); }
+
+.drawer-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--cor-borda);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--cor-primaria);
+  color: var(--cor-secundaria);
+}
+
+.drawer-header h3 {
+  font-family: var(--fonte-titulo);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--cor-acento);
+}
+
+.btn-fechar {
+  background: none;
+  border: none;
+  color: var(--cor-secundaria);
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  line-height: 1;
+  padding: 0.2rem;
+}
+
+.btn-fechar:hover { opacity: 1; }
+
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.5rem;
+}
+
+.cart-vazio {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: rgba(26,26,26,0.35);
+}
+
+.cart-vazio .icone { font-size: 3rem; margin-bottom: 0.75rem; }
+.cart-vazio p { font-size: 0.9rem; }
+
+.cart-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--cor-borda);
+  align-items: flex-start;
+}
+
+.cart-item-info { flex: 1; min-width: 0; }
+
+.cart-item-nome {
+  font-size: 0.88rem;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-item-preco {
+  font-size: 0.82rem;
+  color: var(--cor-acento2);
+  font-weight: 600;
+}
+
+.cart-item-obs {
+  font-size: 0.75rem;
+  color: rgba(26,26,26,0.45);
+  font-style: italic;
+  margin-top: 0.2rem;
+}
+
+.cart-item-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+
+.btn-remover {
+  background: none;
+  border: none;
+  color: rgba(26,26,26,0.3);
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0;
+  transition: color 0.2s;
+  text-decoration: underline;
+}
+
+.btn-remover:hover { color: #a02020; }
+
+.campo-obs {
+  width: 100%;
+  font-family: var(--fonte-corpo);
+  font-size: 0.78rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  color: var(--cor-texto);
+  background: var(--cor-fundo);
+  resize: none;
+  margin-top: 0.3rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.campo-obs:focus { border-color: var(--cor-acento); }
+
+.drawer-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--cor-borda);
+  background: var(--cor-fundo);
+}
+
+.info-entrega {
+  margin-bottom: 0.75rem;
+}
+
+.info-entrega label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(26,26,26,0.5);
+  display: block;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.info-entrega input, .info-entrega select {
+  width: 100%;
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  background: var(--cor-card);
+  color: var(--cor-texto);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.info-entrega input:focus, .info-entrega select:focus {
+  border-color: var(--cor-acento);
+}
+
+.subtotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--cor-borda);
+  margin-top: 0.5rem;
+}
+
+.subtotal span:first-child {
+  font-size: 0.85rem;
+  color: rgba(26,26,26,0.55);
+}
+
+.subtotal strong {
+  font-family: var(--fonte-titulo);
+  font-size: 1.3rem;
+  color: var(--cor-primaria);
+}
+
+.btn-pedir {
+  width: 100%;
+  background: #25d366;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--fonte-corpo);
+  font-size: 0.92rem;
+  font-weight: 600;
+  padding: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: all 0.2s;
+  margin-top: 0.75rem;
+}
+
+.btn-pedir:hover { background: #20bb5a; transform: scale(1.01); }
+.btn-pedir:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+/* ═══════════════════════════════════════════════
+   MODAL DE STATUS DO PEDIDO
+═══════════════════════════════════════════════ */
+.status-fab {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 150;
+  display: none;
+}
+
+.status-fab.visivel { display: block; }
+
+.btn-status {
+  background: var(--cor-primaria);
+  color: var(--cor-secundaria);
+  border: 2px solid var(--cor-acento);
+  border-radius: 100px;
+  font-family: var(--fonte-corpo);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.6rem 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  transition: all 0.2s;
+  animation: pulsar 2s infinite;
+}
+
+@keyframes pulsar {
+  0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+  50% { box-shadow: 0 4px 30px rgba(200,169,110,0.4); }
+}
+
+.btn-status:hover { transform: scale(1.04); }
+
+.dot-vivo {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #25d366;
+  animation: blink 1.2s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Modal status */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.modal-overlay.aberto { opacity: 1; pointer-events: all; }
+
+.modal-box {
+  background: var(--cor-card);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  transform: scale(0.95);
+  transition: transform 0.3s;
+}
+
+.modal-overlay.aberto .modal-box { transform: scale(1); }
+
+.modal-topo {
+  background: var(--cor-primaria);
+  color: var(--cor-secundaria);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-topo h3 {
+  font-family: var(--fonte-titulo);
+  font-size: 1.05rem;
+  color: var(--cor-acento);
+  font-weight: 500;
+}
+
+.modal-body { padding: 1.5rem; }
+
+.pedido-num {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.pedido-num p { font-size: 0.75rem; color: rgba(26,26,26,0.45); text-transform: uppercase; letter-spacing: 0.08em; }
+.pedido-num strong { font-family: var(--fonte-titulo); font-size: 2rem; color: var(--cor-primaria); }
+
+/* Timeline de status */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+.step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  position: relative;
+}
+
+.step:not(:last-child) .step-line {
+  display: block;
+}
+
+.step-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 32px;
+  flex-shrink: 0;
+}
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--cor-borda);
+  background: var(--cor-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  z-index: 1;
+  transition: all 0.4s;
+}
+
+.step.feito .step-circle {
+  background: var(--cor-acento2);
+  border-color: var(--cor-acento2);
+  color: #fff;
+}
+
+.step.atual .step-circle {
+  background: var(--cor-acento);
+  border-color: var(--cor-acento);
+  color: var(--cor-primaria);
+  animation: pulsarCircle 1.5s infinite;
+}
+
+@keyframes pulsarCircle {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,169,110,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(200,169,110,0); }
+}
+
+.step-line {
+  width: 2px;
+  flex: 1;
+  min-height: 24px;
+  background: var(--cor-borda);
+  margin: 2px 0;
+}
+
+.step.feito .step-line { background: var(--cor-acento2); }
+
+.step-info {
+  padding-bottom: 1.25rem;
+}
+
+.step-nome {
+  font-size: 0.88rem;
+  font-weight: 500;
+  margin-bottom: 0.1rem;
+}
+
+.step.atual .step-nome { color: var(--cor-acento2); }
+.step.pendente .step-nome { color: rgba(26,26,26,0.35); }
+
+.step-hora {
+  font-size: 0.73rem;
+  color: rgba(26,26,26,0.4);
+}
+
+.btn-novo-pedido {
+  width: 100%;
+  background: var(--cor-primaria);
+  color: var(--cor-secundaria);
+  border: none;
+  border-radius: 10px;
+  font-family: var(--fonte-corpo);
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 0.75rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.2s;
+}
+
+.btn-novo-pedido:hover { opacity: 0.85; }
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVIDADE
+═══════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .header-inner { height: 56px; }
+  .cat-nav-wrap { top: 56px; }
+  .hero { padding: 2rem 1rem 3rem; }
+  main { padding: 1.5rem 1rem 5rem; }
+  .itens-grid { grid-template-columns: 1fr; }
+  .logo p { display: none; }
+  .btn-cart span.texto { display: none; }
+}
+
+/* ═══════════════════════════════════════════════
+   BADGE FLUTUANTE TOTAL
+═══════════════════════════════════════════════ */
+.fab-total {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 150;
+  display: none;
+}
+
+.fab-total.visivel { display: block; }
+
+.btn-fab-total {
+  background: var(--cor-primaria);
+  color: var(--cor-secundaria);
+  border: none;
+  border-radius: 100px;
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.7rem 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  transition: all 0.2s;
+}
+
+.btn-fab-total:hover { transform: scale(1.03); }
+
+.fab-preco {
+  font-family: var(--fonte-titulo);
+  font-size: 1rem;
+  color: var(--cor-acento);
+}
+
+@media (min-width: 601px) {
+  .fab-total { display: none !important; }
+  .status-fab { bottom: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <h1 id="nomeRestaurante">Bistrô Noturno</h1>
+      <p id="sloganRestaurante">Sabores que contam histórias</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-cart" onclick="abrirCarrinho()">
+        🛒 <span class="texto">Pedido</span>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <h2 id="sloganHero">Sabores que contam histórias</h2>
+  <p id="subtituloHero">Peça agora e receba em breve</p>
+</section>
+
+<!-- ═══════════ NAV DE CATEGORIAS ═══════════ -->
+<div class="cat-nav-wrap">
+  <nav class="cat-nav" id="catNav"></nav>
+</div>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main id="mainContent"></main>
+
+<!-- ═══════════ FAB MOBILE ═══════════ -->
+<div class="fab-total" id="fabTotal">
+  <button class="btn-fab-total" onclick="abrirCarrinho()">
+    🛒 Ver pedido — <span class="fab-preco" id="fabPreco">R$ 0,00</span>
+  </button>
+</div>
+
+<!-- ═══════════ STATUS FAB ═══════════ -->
+<div class="status-fab" id="statusFab">
+  <button class="btn-status" onclick="abrirStatus()">
+    <span class="dot-vivo"></span> Acompanhar pedido
+  </button>
+</div>
+
+<!-- ═══════════ OVERLAY + DRAWER CARRINHO ═══════════ -->
+<div class="overlay" id="overlay" onclick="fecharTudo()"></div>
+
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h3>Seu pedido</h3>
+    <button class="btn-fechar" onclick="fecharCarrinho()">✕</button>
+  </div>
+
+  <div class="drawer-body" id="drawerBody">
+    <div class="cart-vazio" id="cartVazio">
+      <div class="icone">🍽️</div>
+      <p>Seu carrinho está vazio.<br>Adicione algo delicioso!</p>
+    </div>
+    <div id="cartItens"></div>
+  </div>
+
+  <div class="drawer-footer">
+    <div class="info-entrega">
+      <label>Seu nome</label>
+      <input type="text" id="nomeCliente" placeholder="Como devemos te chamar?">
+    </div>
+    <div class="info-entrega">
+      <label>Tipo de atendimento</label>
+      <select id="tipoAtend">
+        <option value="Retirada no local">🏪 Retirada no local</option>
+        <option value="Entrega">🛵 Entrega</option>
+        <option value="Mesa">🪑 Mesa (consumo local)</option>
+      </select>
+    </div>
+    <div class="info-entrega" id="enderecoWrap" style="display:none">
+      <label>Endereço de entrega</label>
+      <input type="text" id="enderecoCliente" placeholder="Rua, número, bairro">
+    </div>
+
+    <div class="subtotal">
+      <span>Total do pedido</span>
+      <strong id="totalValor">R$ 0,00</strong>
+    </div>
+    <button class="btn-pedir" id="btnPedir" onclick="enviarWhatsApp()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Enviar pedido via WhatsApp
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL STATUS ═══════════ -->
+<div class="modal-overlay" id="modalStatus">
+  <div class="modal-box">
+    <div class="modal-topo">
+      <h3>Status do pedido</h3>
+      <button class="btn-fechar" onclick="fecharStatus()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="pedido-num">
+        <p>Pedido nº</p>
+        <strong id="numPedido">#0001</strong>
+      </div>
+      <div class="timeline" id="timeline"></div>
+      <button class="btn-novo-pedido" onclick="novoPedido()">Fazer novo pedido</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   ⚙️ CONFIGURAÇÕES — edite aqui com facilidade
+═══════════════════════════════════════════════ */
+const CONFIG = {
+  nome: "Bistrô Noturno",
+  slogan: "Sabores que contam histórias",
+  subtitulo: "Peça agora e receba em breve",
+  whatsapp: "5567999999999", // sem espaços, com DDI+DDD
+};
+
+/* ═══════════════════════════════════════════════
+   🍽️ CARDÁPIO — adicione/remova categorias e itens
+   
+   CAMPOS DO ITEM:
+   - id: número único
+   - nome: nome do prato
+   - desc: descrição curta
+   - preco: valor em reais (número)
+   - emoji: emoji representativo (ou use imagem com img:"URL")
+   - tags: array com "destaque", "vegano", "picante", "novo" (ou vazio [])
+═══════════════════════════════════════════════ */
+const CARDAPIO = [
+  {
+    categoria: "Entradas",
+    descricao: "Para começar bem",
+    itens: [
+      { id: 1, nome: "Bruschetta ao Tomate", desc: "Pão artesanal grelhado com tomate fresco, manjericão e azeite trufado", preco: 28, emoji: "🍞", tags: ["vegano"] },
+      { id: 2, nome: "Carpaccio de Filé", desc: "Filé mignon em fatias finíssimas com molho de alcaparras e parmesão", preco: 48, emoji: "🥩", tags: ["destaque"] },
+      { id: 3, nome: "Bolinho de Bacalhau", desc: "Crocante por fora, cremoso por dentro, servido com aioli de alho negro", preco: 38, emoji: "🐟", tags: [] },
+    ]
+  },
+  {
+    categoria: "Pratos Principais",
+    descricao: "O coração do nosso menu",
+    itens: [
+      { id: 4, nome: "Risoto de Cogumelos", desc: "Cogumelos frescos, parmesão envelhecido e trufa negra", preco: 72, emoji: "🍄", tags: ["destaque", "vegano"] },
+      { id: 5, nome: "Filé ao Molho Madeira", desc: "Filé mignon ao ponto com molho madeira, arroz piamontês e legumes", preco: 98, emoji: "🥩", tags: ["destaque"] },
+      { id: 6, nome: "Salmão Grelhado", desc: "Salmão norueguês com crosta de ervas, purê de mandioquinha e vinagrete cítrico", preco: 89, emoji: "🐠", tags: ["novo"] },
+      { id: 7, nome: "Pappardelle ao Ragú", desc: "Massa fresca artesanal com ragú de costelinha braseada por 8 horas", preco: 68, emoji: "🍝", tags: [] },
+      { id: 8, nome: "Frango Piri-Piri", desc: "Frango marinado no piri-piri com batatas rústicas e salada de rúcula", preco: 62, emoji: "🍗", tags: ["picante"] },
+    ]
+  },
+  {
+    categoria: "Sobremesas",
+    descricao: "Finais que ficam na memória",
+    itens: [
+      { id: 9, nome: "Petit Gâteau", desc: "Bolo de chocolate com coração líquido, sorvete de baunilha e calda de frutas", preco: 34, emoji: "🍫", tags: ["destaque"] },
+      { id: 10, nome: "Tiramisù da Casa", desc: "Receita italiana original com café espresso e mascarpone artesanal", preco: 32, emoji: "☕", tags: [] },
+      { id: 11, nome: "Sorbet de Maracujá", desc: "Sorbet tropical refrescante com coulis de frutas vermelhas", preco: 24, emoji: "🍨", tags: ["vegano"] },
+    ]
+  },
+  {
+    categoria: "Bebidas",
+    descricao: "Acompanhamentos perfeitos",
+    itens: [
+      { id: 12, nome: "Limonada Suíça", desc: "Limonada cremosa com leite condensado, hortelã e raspas de limão siciliano", preco: 18, emoji: "🍋", tags: ["novo"] },
+      { id: 13, nome: "Suco Natural", desc: "Laranja, Abacaxi com Hortelã ou Melancia — feito na hora", preco: 14, emoji: "🧃", tags: ["vegano"] },
+      { id: 14, nome: "Água com Gás Premium", desc: "Importada, garrafa 500ml geladinha", preco: 12, emoji: "💧", tags: [] },
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════════════
+   ESTADO DA APLICAÇÃO
+═══════════════════════════════════════════════ */
+let carrinho = {};
+let pedidoEnviado = false;
+let numPedido = Math.floor(Math.random() * 8999) + 1000;
+
+/* ═══════════════════════════════════════════════
+   INICIALIZAÇÃO
+═══════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('nomeRestaurante').textContent = CONFIG.nome;
+  document.getElementById('sloganRestaurante').textContent = CONFIG.slogan;
+  document.getElementById('sloganHero').textContent = CONFIG.slogan;
+  document.getElementById('subtituloHero').textContent = CONFIG.subtitulo;
+  document.title = CONFIG.nome + " — Cardápio";
+
+  renderCatNav();
+  renderCardapio();
+
+  document.getElementById('tipoAtend').addEventListener('change', e => {
+    document.getElementById('enderecoWrap').style.display =
+      e.target.value === 'Entrega' ? 'block' : 'none';
+  });
+});
+
+/* ═══════════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════════ */
+function renderCatNav() {
+  const nav = document.getElementById('catNav');
+  nav.innerHTML = CARDAPIO.map((cat, i) =>
+    `<button class="cat-btn${i===0?' ativo':''}" onclick="irParaCategoria('cat-${i}', this)">${cat.categoria}</button>`
+  ).join('');
+}
+
+function renderCardapio() {
+  const main = document.getElementById('mainContent');
+  main.innerHTML = CARDAPIO.map((cat, i) => `
+    <section class="secao" id="cat-${i}">
+      <h2 class="secao-titulo">${cat.categoria}</h2>
+      ${cat.descricao ? `<p class="secao-desc">${cat.descricao}</p>` : ''}
+      <div class="itens-grid">
+        ${cat.itens.map(item => renderCard(item)).join('')}
+      </div>
+    </section>
+  `).join('');
+}
+
+function renderCard(item) {
+  const tagsHtml = item.tags.map(t => {
+    const mapa = { destaque:'⭐ Destaque', vegano:'🌿 Vegano', picante:'🌶️ Picante', novo:'✨ Novo' };
+    return `<span class="tag tag-${t}">${mapa[t]||t}</span>`;
+  }).join('');
+
+  const imgHtml = item.img
+    ? `<img class="item-img" src="${item.img}" alt="${item.nome}" loading="lazy">`
+    : `<div class="item-img-placeholder">${item.emoji||'🍽️'}</div>`;
+
+  return `
+    <div class="item-card" id="card-${item.id}">
+      ${imgHtml}
+      <div class="item-body">
+        ${tagsHtml ? `<div class="item-tags">${tagsHtml}</div>` : ''}
+        <p class="item-nome">${item.nome}</p>
+        <p class="item-desc">${item.desc}</p>
+        <div class="item-footer">
+          <span class="item-preco">R$ ${item.preco.toFixed(2).replace('.',',')}</span>
+          <div id="ctrl-${item.id}">${renderCtrl(item.id)}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderCtrl(id) {
+  const qty = carrinho[id]?.qty || 0;
+  if (qty === 0) {
+    return `<button class="btn-add" onclick="adicionar(${id})" aria-label="Adicionar ao carrinho">+</button>`;
+  }
+  return `
+    <div class="qty-ctrl">
+      <button class="qty-btn" onclick="removerUm(${id})" aria-label="Remover um">−</button>
+      <span class="qty-num">${qty}</span>
+      <button class="qty-btn" onclick="adicionar(${id})" aria-label="Adicionar mais">+</button>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════
+   CARRINHO
+═══════════════════════════════════════════════ */
+function encontrarItem(id) {
+  for (const cat of CARDAPIO) {
+    const it = cat.itens.find(i => i.id === id);
+    if (it) return it;
+  }
+  return null;
+}
+
+function adicionar(id) {
+  const item = encontrarItem(id);
+  if (!item) return;
+  if (!carrinho[id]) carrinho[id] = { item, qty: 0, obs: '' };
+  carrinho[id].qty++;
+  atualizarUI(id);
+}
+
+function removerUm(id) {
+  if (!carrinho[id]) return;
+  carrinho[id].qty--;
+  if (carrinho[id].qty <= 0) delete carrinho[id];
+  atualizarUI(id);
+}
+
+function removerItem(id) {
+  delete carrinho[id];
+  atualizarUI(id);
+  renderDrawer();
+}
+
+function atualizarUI(id) {
+  const el = document.getElementById(`ctrl-${id}`);
+  if (el) el.innerHTML = renderCtrl(id);
+  atualizarContador();
+  renderDrawer();
+}
+
+function atualizarContador() {
+  const total = Object.values(carrinho).reduce((s,c) => s + c.qty, 0);
+  const valor = calcTotal();
+  document.getElementById('cartCount').textContent = total;
+  document.getElementById('totalValor').textContent = formatarPreco(valor);
+
+  const fab = document.getElementById('fabTotal');
+  if (total > 0) {
+    fab.classList.add('visivel');
+    document.getElementById('fabPreco').textContent = formatarPreco(valor);
+  } else {
+    fab.classList.remove('visivel');
+  }
+}
+
+function calcTotal() {
+  return Object.values(carrinho).reduce((s,c) => s + c.item.preco * c.qty, 0);
+}
+
+function formatarPreco(v) {
+  return 'R$ ' + v.toFixed(2).replace('.', ',');
+}
+
+function renderDrawer() {
+  const itens = Object.values(carrinho);
+  const vazio = document.getElementById('cartVazio');
+  const lista = document.getElementById('cartItens');
+  const btnPedir = document.getElementById('btnPedir');
+
+  if (itens.length === 0) {
+    vazio.style.display = 'block';
+    lista.innerHTML = '';
+    btnPedir.disabled = true;
+    return;
+  }
+
+  vazio.style.display = 'none';
+  btnPedir.disabled = false;
+
+  lista.innerHTML = itens.map(c => `
+    <div class="cart-item">
+      <div style="font-size:1.5rem; flex-shrink:0;">${c.item.emoji||'🍽️'}</div>
+      <div class="cart-item-info">
+        <p class="cart-item-nome">${c.item.nome}</p>
+        <p class="cart-item-preco">${formatarPreco(c.item.preco * c.qty)}</p>
+        <textarea class="campo-obs" rows="1" placeholder="Observações (opcional)..."
+          oninput="salvarObs(${c.item.id}, this.value)">${c.obs||''}</textarea>
+      </div>
+      <div class="cart-item-actions">
+        <button class="btn-remover" onclick="removerItem(${c.item.id})">remover</button>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="removerUm(${c.item.id})">−</button>
+          <span class="qty-num">${c.qty}</span>
+          <button class="qty-btn" onclick="adicionar(${c.item.id})">+</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function salvarObs(id, val) {
+  if (carrinho[id]) carrinho[id].obs = val;
+}
+
+/* ═══════════════════════════════════════════════
+   WHATSAPP
+═══════════════════════════════════════════════ */
+function enviarWhatsApp() {
+  const nome = document.getElementById('nomeCliente').value.trim();
+  const tipo = document.getElementById('tipoAtend').value;
+  const end = document.getElementById('enderecoCliente').value.trim();
+
+  if (!nome) {
+    document.getElementById('nomeCliente').focus();
+    document.getElementById('nomeCliente').style.borderColor = '#a02020';
+    setTimeout(() => document.getElementById('nomeCliente').style.borderColor = '', 2000);
+    return;
+  }
+
+  if (tipo === 'Entrega' && !end) {
+    document.getElementById('enderecoCliente').focus();
+    document.getElementById('enderecoCliente').style.borderColor = '#a02020';
+    setTimeout(() => document.getElementById('enderecoCliente').style.borderColor = '', 2000);
+    return;
+  }
+
+  const itens = Object.values(carrinho);
+  if (itens.length === 0) return;
+
+  const linhas = itens.map(c => {
+    let l = `• ${c.qty}x ${c.item.nome} — ${formatarPreco(c.item.preco * c.qty)}`;
+    if (c.obs) l += `\n  _(${c.obs})_`;
+    return l;
+  }).join('\n');
+
+  const total = calcTotal();
+  numPedido = Math.floor(Math.random() * 8999) + 1000;
+
+  let msg = `*Olá! Gostaria de fazer um pedido* 🍽️\n\n`;
+  msg += `*Pedido #${numPedido}*\n`;
+  msg += `*Cliente:* ${nome}\n`;
+  msg += `*Tipo:* ${tipo}\n`;
+  if (tipo === 'Entrega') msg += `*Endereço:* ${end}\n`;
+  msg += `\n*Itens:*\n${linhas}\n\n`;
+  msg += `*Total: ${formatarPreco(total)}*\n\n`;
+  msg += `_Pedido enviado pelo cardápio digital_`;
+
+  const url = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+
+  fecharCarrinho();
+  pedidoEnviado = true;
+  document.getElementById('numPedido').textContent = `#${numPedido}`;
+  iniciarTimeline();
+  document.getElementById('statusFab').classList.add('visivel');
+}
+
+/* ═══════════════════════════════════════════════
+   TIMELINE DE STATUS
+═══════════════════════════════════════════════ */
+const STEPS = [
+  { nome: 'Pedido recebido', icone: '✓' },
+  { nome: 'Em preparo', icone: '👨‍🍳' },
+  { nome: 'Pronto para retirada / Saiu para entrega', icone: '📦' },
+  { nome: 'Entregue!', icone: '🎉' },
+];
+
+let stepAtual = 0;
+
+function iniciarTimeline() {
+  stepAtual = 0;
+  renderTimeline();
+  const iv = setInterval(() => {
+    stepAtual++;
+    renderTimeline();
+    if (stepAtual >= STEPS.length - 1) clearInterval(iv);
+  }, 12000);
+}
+
+function renderTimeline() {
+  const tl = document.getElementById('timeline');
+  tl.innerHTML = STEPS.map((s, i) => {
+    let cls = 'pendente';
+    if (i < stepAtual) cls = 'feito';
+    else if (i === stepAtual) cls = 'atual';
+
+    const hora = i <= stepAtual ? new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}) : '';
+    const linha = i < STEPS.length - 1 ? `<div class="step-line"></div>` : '';
+
+    return `
+      <div class="step ${cls}">
+        <div class="step-left">
+          <div class="step-circle">${i < stepAtual ? '✓' : s.icone}</div>
+          ${linha}
+        </div>
+        <div class="step-info">
+          <p class="step-nome">${s.nome}</p>
+          ${hora ? `<p class="step-hora">${hora}</p>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function novoPedido() {
+  carrinho = {};
+  pedidoEnviado = false;
+  stepAtual = 0;
+  atualizarContador();
+  renderDrawer();
+  renderCardapio();
+  fecharStatus();
+  document.getElementById('statusFab').classList.remove('visivel');
+}
+
+/* ═══════════════════════════════════════════════
+   NAVEGAÇÃO
+═══════════════════════════════════════════════ */
+function irParaCategoria(id, btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function abrirCarrinho() {
+  document.getElementById('drawer').classList.add('aberto');
+  document.getElementById('overlay').classList.add('aberto');
+  renderDrawer();
+}
+
+function fecharCarrinho() {
+  document.getElementById('drawer').classList.remove('aberto');
+  document.getElementById('overlay').classList.remove('aberto');
+}
+
+function abrirStatus() {
+  document.getElementById('modalStatus').classList.add('aberto');
+}
+
+function fecharStatus() {
+  document.getElementById('modalStatus').classList.remove('aberto');
+}
+
+function fecharTudo() {
+  fecharCarrinho();
+}
+</script>
+</body>
+</html>
