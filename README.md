@@ -1,5 +1,6 @@
 # 🍽️ Cardápio Digital
 https://yamanarimatt.github.io/Cardapio-Digital/
+
 Sistema de cardápio digital responsivo, com integração ao WhatsApp e acompanhamento de pedido em tempo real. Arquivo único HTML, sem dependências pagas, sem servidor back-end necessário.
 
 ---
